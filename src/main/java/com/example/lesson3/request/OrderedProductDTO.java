@@ -1,0 +1,49 @@
+package com.example.lesson3.request;
+
+public class OrderedProductDTO {
+    private String productName;
+    private int quantity;
+    private String customerName;
+    private String note; 
+
+    public OrderedProductDTO(String productName, int quantity, String customerName, String note) {
+        this.productName = productName;
+        this.quantity = quantity;
+        this.customerName = customerName;
+        this.note = note;
+    }
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+    
+}
+
