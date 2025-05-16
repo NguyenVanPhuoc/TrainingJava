@@ -78,7 +78,7 @@
                             
                             <!-- Upload hình ảnh -->
 							<div class="form-group mb-2">
-							    <label for="image" class="form-label">Hình ảnh sản phẩm</label>
+							    <label for="image" class="form-label">Ảnh đại diện</label>
 							    <div class="input-group">
 							        <span class="input-group-text"><i class="fas fa-image"></i></span>
 							        <input type="file" class="form-control" name="imageFile" id="image" accept="image/*" />

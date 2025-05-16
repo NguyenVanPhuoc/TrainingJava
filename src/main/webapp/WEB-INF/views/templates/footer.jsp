@@ -20,7 +20,8 @@
         <ul class="list-unstyled mb-0">
           <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Thực đơn</a></li>
           <li class="mb-2"><a href="/user/orders/unpaid" class="text-secondary text-decoration-none">Hóa đơn</a></li>
-          <li class="mb-2"><a href="https://www.chatwork.com/#!rid261092654" class="text-secondary text-decoration-none">Liên hệ</a></li>
+          <li class="mb-2"><a href="https://www.chatwork.com/#!rid261092654" class="text-secondary text-decoration-none" target="_blank">Liên hệ</a></li>
+          <li class="mb-2"><a href="/user/orders/unpaid" class="text-secondary text-decoration-none">Hồ sơ</a></li>
         </ul>
       </div>
       
@@ -34,11 +35,11 @@
           </li>
           <li class="mb-2 d-flex align-items-center">
             <i class="bi bi-telephone-fill me-2 text-success"></i>
-            <span class="text-secondary">0363906700</span>
+            <a href="tel:+0363906700" class="text-secondary">0363906700</a>
           </li>
           <li class="mb-2 d-flex align-items-center">
             <i class="bi bi-envelope-fill me-2 text-success"></i>
-            <span class="text-secondary">info@baufood.com</span>
+            <span class="text-secondary">phuocnv.nta@gmail.com</span>
           </li>
         </ul>
       </div>

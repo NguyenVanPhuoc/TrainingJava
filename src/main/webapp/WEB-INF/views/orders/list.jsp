@@ -1,7 +1,9 @@
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%@ include file="/WEB-INF/views/common/format-utils.jspf" %>
 
 <c:if test="${not empty successMessage}">
 	<div
@@ -106,8 +108,7 @@
 										<i class="fas fa-check"></i> Xác nhận thanh toán
 									</button>
 								</c:if></td>
-							<td><fmt:formatNumber value="${order.totalPrice}"
-									type="number" groupingUsed="true" /> đ</td>
+							<td class="product-price">${dotFormatter.format(order.totalPrice)} đ</td>
 							<td>
 								<button type="button" class="btn btn-info btn-sm view-detail-btn"
 									data-order-id="${order.id}">

@@ -1,13 +1,23 @@
 package com.example.lesson3.utils;
 
-import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PasswordUtil {
+    private static BCryptPasswordEncoder encoder;
+
+    @Autowired
+    public void setPasswordEncoder(BCryptPasswordEncoder passwordEncoder) {
+        PasswordUtil.encoder = passwordEncoder;
+    }
+
     public static String hashPassword(String password) {
-        return BCrypt.hashpw(password, BCrypt.gensalt(12)); // Mã hóa mật khẩu
+        return encoder.encode(password);
     }
 
     public static boolean checkPassword(String password, String hashedPassword) {
-        return BCrypt.checkpw(password, hashedPassword); // Kiểm tra mật khẩu
+        return encoder.matches(password, hashedPassword);
     }
 }

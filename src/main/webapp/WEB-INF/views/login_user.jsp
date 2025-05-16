@@ -14,7 +14,12 @@
         }
         
         body {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: url(../images/b2.jpg);
+		    background-repeat: no-repeat;
+		    background-attachment: fixed;
+		    background-position: center;
+		    background-size: cover;
+		    -webkit-background-size: cover;
             height: 100vh;
             display: flex;
             align-items: center;
@@ -82,7 +87,7 @@
         }
 
         .btn-login {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #218838, #28a745);
             color: white;
             border: none;
             padding: 14px;
@@ -99,13 +104,18 @@
 		    white-space: pre-wrap;
 		    word-break: break-all;
 		}
+		.mb-t2 {
+			margin-top: 5px;
+			margin-bottom: 15px;
+			color: red;
+		}
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <div class="logo">
-            <h1>FROM LOGIN</h1>
+            <h1>ĐĂNG NHẬP</h1>
         </div>
         
         <form action="/login" method="post">
@@ -119,10 +129,10 @@
 		        <label for="password">Mật khẩu</label>
 		        <input type="password" id="password" name="password" placeholder="Nhập mật khẩu của bạn" required>
 		        <i class="fas fa-lock"></i>
+			    <% if (request.getParameter("error") != null) { %>
+				    <div class="danger-error mb-t2">Email hoặc Mật khẩu không đúng !</div>
+				<% } %>
 		    </div>
-		    <% if (request.getParameter("error") != null) { %>
-			    <div class="danger-error">Email or Password is incorrect!</div>
-			<% } %>
 		    <button type="submit" class="btn-login">ĐĂNG NHẬP</button>
 		</form>
 

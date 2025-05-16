@@ -2,6 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%@ include file="/WEB-INF/views/templates/header.jsp"%>
+<%@ include file="/WEB-INF/views/common/format-utils.jspf"%>
 
 <fmt:setLocale value="vi_VN" />
 <h3 class="title_unpaid">Hóa đơn chưa thanh toán</h3>
@@ -11,7 +12,8 @@
 			<div class="order-header">
 				<div class="order-date">
 					Ngày đặt hàng:
-					<fmt:formatDate value="${order.createdAtAsDate}" pattern="dd/MM/yyyy HH:mm" />
+					<fmt:formatDate value="${order.createdAtAsDate}"
+						pattern="dd/MM/yyyy HH:mm" />
 				</div>
 			</div>
 
@@ -28,9 +30,8 @@
 						<tr>
 							<td class="product-name">${item.product.name}</td>
 							<td class="product-quantity"><span>${item.quantity}</span></td>
-							<td class="product-price"><fmt:formatNumber
-									value="${item.quantity * item.price}" type="number"
-									maxFractionDigits="0" groupingUsed="true" /> đ</td>
+							<td class="product-price">${dotFormatter.format(item.quantity * item.price)}
+								đ</td>
 						</tr>
 					</c:forEach>
 
@@ -38,9 +39,8 @@
 					<tr class="order-subtotal-row">
 						<td colspan="2" class="order-subtotal-label">Tổng giá đơn
 							hàng:</td>
-						<td class="order-subtotal-amount"><fmt:formatNumber
-								value="${order.totalPrice}" type="number" maxFractionDigits="0"
-								groupingUsed="true" /> đ</td>
+						<td class="order-subtotal-amount">${dotFormatter.format(order.totalPrice)}
+							đ</td>
 					</tr>
 				</tbody>
 			</table>
@@ -50,11 +50,8 @@
 	<!-- Tổng cộng tất cả đơn hàng chưa thanh toán -->
 	<div class="total-all-orders">
 		<div class="total-all-label">Tổng cộng tất cả đơn hàng:</div>
-		<div class="total-all-amount">
-			<fmt:formatNumber value="${totalPrice}" type="number"
-				maxFractionDigits="0" groupingUsed="true" />
-			đ
-		</div>
+		<div class="total-all-amount">${dotFormatter.format(totalPrice)}
+			đ</div>
 	</div>
 </div>
 

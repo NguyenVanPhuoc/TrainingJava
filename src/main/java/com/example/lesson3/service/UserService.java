@@ -88,9 +88,12 @@ public class UserService {
 			user.setPhone(userDetails.getPhone());
 			user.setAddress(userDetails.getAddress());
 			user.setAvatar(userDetails.getAvatar());
-			if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
-				String hashedPassword = PasswordUtil.hashPassword(userDetails.getPassword());
-				user.setPassword(hashedPassword);
+			if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty() && !userDetails.getPassword().equals(user.getPassword())) {
+				if (!userDetails.getPassword().startsWith("$2a$")) {
+					user.setPassword(PasswordUtil.hashPassword(userDetails.getPassword()));
+				} else {
+					user.setPassword(userDetails.getPassword());
+				}
 			}
 			return userRepository.save(user);
 		}).orElse(null);

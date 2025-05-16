@@ -1,0 +1,7 @@
+<%@ page import="java.text.DecimalFormat, java.text.DecimalFormatSymbols" %>
+<%
+    DecimalFormatSymbols customSymbols = new DecimalFormatSymbols();
+    customSymbols.setGroupingSeparator('.');
+    DecimalFormat dotFormatter = new DecimalFormat("#,##0", customSymbols);
+    pageContext.setAttribute("dotFormatter", dotFormatter);
+%>
