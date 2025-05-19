@@ -28,12 +28,9 @@ public class UserStoreRequest {
 	@Size(max = 50, message = "Email không được vượt quá 50 ký tự!")
 	private String email;
 
-    @NotBlank(message = "Mật khẩu không được để trống!")
-    @Pattern(
-        regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{6,}$",
-        message = "Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ hoa, chữ thường và số!"
-    )
-    private String password;
+	@NotBlank(message = "Mật khẩu không được để trống!")
+	@Size(min = 6, message = "Mật khẩu phải có ít nhất 6 ký tự!")
+	private String password;
     
     private int role;
     

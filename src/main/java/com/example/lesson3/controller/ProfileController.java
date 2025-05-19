@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
 
 @Controller
 public class ProfileController {
@@ -55,7 +54,7 @@ public class ProfileController {
                     redirectAttributes.addFlashAttribute("errorMessage", "Mật khẩu xác nhận không khớp!");
                     return "redirect:/profile";
                 }
-                currentUser.setPassword(password);
+                // Không set mật khẩu ở đây, để UserService xử lý việc hash
             }
 
             // Kiểm tra email mới có trùng với email khác không
@@ -76,6 +75,12 @@ public class ProfileController {
             currentUser.setEmail(email);
             currentUser.setPhone(phone);
             currentUser.setAddress(address);
+            
+            // Set mật khẩu mới nếu có
+            if (password != null && !password.isEmpty()) {
+                String hashedPassword = PasswordUtil.hashPassword(password);
+                currentUser.setPassword(hashedPassword);
+            }
 
             // Xử lý ảnh đại diện
             if (imageFile != null && !imageFile.isEmpty()) {
@@ -91,8 +96,8 @@ public class ProfileController {
                 String filename = FileUploadUtil.saveFile("uploads/users", imageFile);
                 currentUser.setAvatar("users/" + filename);
             }
-
-            userService.updateUser(currentUser.getId(), currentUser);
+            // Lưu thông tin user
+            userService.saveUser(currentUser);
             
             // Nếu email hoặc mật khẩu thay đổi, yêu cầu đăng nhập lại
             if (!email.equals(currentEmail) || (password != null && !password.isEmpty())) {

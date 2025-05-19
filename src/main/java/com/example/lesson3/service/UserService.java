@@ -77,8 +77,12 @@ public class UserService {
 		return userRepository.save(user);
 	}
 	
+	// Lưu user
+	public User saveUser(User user) {
+		return userRepository.save(user);
+	}
 	
-	// Cập nhật user
+	// Cập nhật user (chỉ dùng cho admin)
 	public User updateUser(Long id, User userDetails) {
 		return userRepository.findById(id).map(user -> {
 			user.setUsername(userDetails.getUsername());
@@ -88,17 +92,12 @@ public class UserService {
 			user.setPhone(userDetails.getPhone());
 			user.setAddress(userDetails.getAddress());
 			user.setAvatar(userDetails.getAvatar());
-			if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty() && !userDetails.getPassword().equals(user.getPassword())) {
-				if (!userDetails.getPassword().startsWith("$2a$")) {
-					user.setPassword(PasswordUtil.hashPassword(userDetails.getPassword()));
-				} else {
-					user.setPassword(userDetails.getPassword());
-				}
+			if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
+				user.setPassword(userDetails.getPassword());             
 			}
 			return userRepository.save(user);
 		}).orElse(null);
 	}
-	
 	
 	// Xóa user
 	public void deleteUser(Long id) {
