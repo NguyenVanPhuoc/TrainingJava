@@ -6,6 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.time.LocalDateTime;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,6 +44,24 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "store_id")
     private Store store;
+    
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+    
+    @PrePersist
+    protected void onCreate() {
+        LocalDateTime now = LocalDateTime.now();
+        createdAt = now;
+        updatedAt = now;
+    }
+    
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
 	public Long getId() {
 		return id;
@@ -125,5 +144,20 @@ public class Product {
 	    this.store.setId(storeId);
 	}
 
+    public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
 
 }

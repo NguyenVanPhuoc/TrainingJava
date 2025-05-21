@@ -43,7 +43,7 @@ public class ProductService {
 	}
 
 	public List<Product> findByStoreId(Long storeId) {
-		return productRepository.findByStore_IdOrderByStatusAsc(storeId);
+		return productRepository.findByStore_IdOrderByStatusAscCreatedAtAsc(storeId);
 	}
 
 	public void deleteById(Long id) {

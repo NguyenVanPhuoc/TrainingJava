@@ -14,6 +14,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	Page<Product> findByStore_IdAndNameContainingIgnoreCase(Long storeId, String keyword, Pageable pageable);
 	Page<Product> findByStore_IdAndNameContainingIgnoreCaseAndStatus(Long storeId, String keyword, Integer status, Pageable pageable);
 	List<Product> findByStore_Id(Long storeId);
-	List<Product> findByStore_IdOrderByStatusAsc(Long storeId);
+	List<Product> findByStore_IdOrderByStatusAscCreatedAtAsc(Long storeId);
 }
 
