@@ -35,7 +35,15 @@ public class ProductService {
 	}
 
 	public Product save(Product product) {
-		return productRepository.save(product);
+		if (product.getId() != null) {
+			Optional<Product> existingProduct = productRepository.findById(product.getId());
+			if (existingProduct.isPresent()) {
+				Product oldProduct = existingProduct.get();
+				product.setCreatedAt(oldProduct.getCreatedAt());
+			}
+		}
+		Product savedProduct = productRepository.save(product);
+		return savedProduct;
 	}
 
 	public Optional<Product> findById(Long id) {
