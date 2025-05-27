@@ -88,6 +88,18 @@ public class HomeController {
 		}
 	}
 	
+	@PostMapping("/orderItem/delete/{id}")
+	@ResponseBody
+	public ResponseEntity<?> deleteOrderItem(@PathVariable Long id) {
+		try {
+			orderService.deleteOrderItem(id);
+			return ResponseEntity.ok().build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi xóa sản phẩm");
+		}
+	}
+	
 	@GetMapping("/user/orders/unpaid")
 	public String getUnpaidOrders(Model model, Principal principal) {
 	    User user = userService.findByEmail(principal.getName());

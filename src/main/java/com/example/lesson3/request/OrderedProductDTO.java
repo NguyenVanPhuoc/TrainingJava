@@ -1,16 +1,26 @@
 package com.example.lesson3.request;
 
 public class OrderedProductDTO {
+    private Long id;
     private String productName;
     private int quantity;
     private String customerName;
     private String note; 
 
-    public OrderedProductDTO(String productName, int quantity, String customerName, String note) {
+    public OrderedProductDTO(Long id, String productName, int quantity, String customerName, String note) {
+        this.id = id;
         this.productName = productName;
         this.quantity = quantity;
         this.customerName = customerName;
         this.note = note;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
 	public String getProductName() {

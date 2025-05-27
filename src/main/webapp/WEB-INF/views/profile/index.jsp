@@ -84,7 +84,7 @@
 									<span class="input-group-text bg-light"><i
 										class="fas fa-user"></i></span> <input type="text"
 										class="form-control" id="name" name="name"
-										value="${user.name}">
+										value="${user.name}" readonly disabled>
 								</div>
 							</div>
 							<div class="form-group mb-3">

@@ -51,6 +51,7 @@
 						<th>Số Lượng</th>
 						<th>Ghi Chú</th>
 						<th>Người Đặt</th>
+						<th>Thao tác</th>
 					</tr>
 				</thead>
 				<tbody id="ordered-products-table">
@@ -62,6 +63,12 @@
 								class="quantity-badge">${orderedProduct.quantity}</span></td>
 							<td data-label="Ghi chú" class="note"><span class="note">${orderedProduct.note}</span></td>
 							<td data-label="Người Đặt" class="customer-name">${orderedProduct.customerName}</td>
+							<td data-label="Thao tác">
+								<button type="button" class="btn btn-danger btn-sm ms-1 btn-delete"
+									data-id="${orderedProduct.id}">
+									<i class="fas fa-trash"></i>
+								</button>
+							</td>
 						</tr>
 						<c:set var="totalQuantity"
 							value="${totalQuantity + orderedProduct.quantity}" />
@@ -69,7 +76,7 @@
 					<tr class="font-bold bg-gray-100">
 						<td colspan="1">Tổng cộng</td>
 						<td colspan="1"><span class="quantity-badge">${totalQuantity}</span></td>
-						<td colspan="2"></td>
+						<td colspan="3"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -167,13 +174,70 @@
 		const orderStart = "${store.orderStartTime}";
 		const orderEnd = "${store.orderEndTime}";
 
-		if (!isInOrderTime(orderStart, orderEnd)) {
-		  $('.btn-add, .btn-minus').prop('disabled', true);
-		  $('.detail-cart .title').after('<div class="order-time">Hiện tại ngoài giờ đặt hàng</div>');
-		  $('.product-item').addClass('disabled-product');
-		  $('#confirm-btn').remove();
+		// Khai báo biến interval ở ngoài để có thể truy cập từ mọi nơi
+		let orderTimeInterval;
+
+		// Hàm kiểm tra và cập nhật trạng thái đặt hàng
+		function checkOrderTime() {
+			console.log('Checking order time...');
+			if (!isInOrderTime(orderStart, orderEnd)) {
+				console.log('Outside order time');
+				$('.btn-add, .btn-minus').prop('disabled', true);
+				if ($('.order-time').length === 0) {
+					$('.detail-cart .title').after('<div class="order-time">Hiện tại ngoài giờ đặt hàng</div>');
+				}
+				$('.product-item').addClass('disabled-product');
+				$('.btn-delete').addClass('disabled-product');
+				if ($('#confirm-btn').length > 0) {
+					$('#confirm-btn').remove();
+				}
+				// Dừng interval khi ngoài giờ đặt hàng
+				if (orderTimeInterval) {
+					clearInterval(orderTimeInterval);
+					orderTimeInterval = null;
+					console.log('Interval stopped - outside order time');
+				}
+			} else {
+				console.log('Inside order time');
+				$('.btn-add, .btn-minus').prop('disabled', false);
+				$('.order-time').remove();
+				$('.product-item').removeClass('disabled-product');
+				$('.btn-delete').removeClass('disabled-product');
+				if ($('#confirm-btn').length === 0 && Object.keys(cart).length > 0) {
+					$('.detail-cart .d-flex').append('<button id="confirm-btn" class="confirm-btn">Xác nhận</button>');
+				}
+			}
 		}
-		
+
+		// Kiểm tra lần đầu khi trang load
+		checkOrderTime();
+
+		// Chỉ bắt đầu interval nếu đang trong giờ đặt hàng
+		if (isInOrderTime(orderStart, orderEnd)) {
+			orderTimeInterval = setInterval(checkOrderTime, 60000);
+			console.log('Interval started - inside order time');
+		}
+
+		// Kiểm tra khi người dùng quay lại tab
+		$(window).on('focus', function() {
+			console.log('Window focused, checking order time');
+			checkOrderTime();
+			// Nếu đang trong giờ đặt hàng và interval chưa chạy, bắt đầu lại
+			if (isInOrderTime(orderStart, orderEnd) && !orderTimeInterval) {
+				orderTimeInterval = setInterval(checkOrderTime, 60000);
+				console.log('Interval restarted - inside order time');
+			}
+		});
+
+		// Dọn dẹp interval khi rời trang
+		$(window).on('beforeunload', function() {
+			console.log('Cleaning up interval');
+			if (orderTimeInterval) {
+				clearInterval(orderTimeInterval);
+				orderTimeInterval = null;
+			}
+		});
+
 	  $('#cart-items').on('input', '.note-input', function () {
 		  const id = $(this).closest('.cart-item').data('id');
 		  const note = $(this).val();
@@ -259,6 +323,9 @@
 	   	    	        '<td data-label="Số Lượng" class="quantity"><span class="quantity-badge">' + item.quantity + '</span></td>' +
 	   	    	     	'<td data-label="Ghi chú" class="note"><span class="note">' + (item.note || '') + '</span></td>' +
 	   	    	        '<td data-label="Người Đặt" class="customer-name">' + item.customerName + '</td>' +
+	   	    	        '<td data-label="Thao tác">' +
+	   	    	            '<button type="button" class="btn btn-danger btn-sm ms-1 btn-delete" data-id="' + item.id + '"><i class="fas fa-trash"></i></button>' +
+	   	    	        '</td>' +
 	   	    	    '</tr>';
 	   	    	$('#ordered-products-table').append(row);
 	   	    });
@@ -266,7 +333,7 @@
 		         '<tr class="font-bold bg-gray-100">' +
 		             '<td colspan="1">Tổng cộng</td>' +
 		             '<td data-label="Số Lượng" colspan="1"><span class="quantity-badge">' + totalQuantity + '</span></td>' +
-		             '<td colspan="2"></td>' +
+		             '<td colspan="3"></td>' +
 		         '</tr>';
 	
 		     $('#ordered-products-table').append(totalRow);
@@ -277,6 +344,23 @@
    	    }
    	  });
    	});
+
+    $('#ordered-products-table').on('click', '.btn-delete', function() {
+        const id = $(this).data('id');
+        if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+            $.ajax({
+                url: '/orderItem/delete/' + id,
+                type: 'POST',
+                success: function(response) {
+                    location.reload();
+                },
+                error: function(error) {
+                    alert('Xóa sản phẩm thất bại!');
+                    console.error(error);
+                }
+            });
+        }
+    });
   });
 </script>
 <%@ include file="/WEB-INF/views/templates/footer.jsp"%>

@@ -21,6 +21,7 @@ import com.example.lesson3.model.User;
 import com.example.lesson3.repository.OrderRepository;
 import com.example.lesson3.repository.ProductRepository;
 import com.example.lesson3.repository.StoreRepository;
+import com.example.lesson3.repository.OrderItemRepository;
 import com.example.lesson3.request.OrderRequest;
 import com.example.lesson3.request.OrderedProductDTO;
 
@@ -30,12 +31,14 @@ public class OrderService {
 	private final OrderRepository orderRepository;
 	private final ProductRepository productRepository;
 	private final StoreRepository storeRepository;
+	private final OrderItemRepository orderItemRepository;
 
 	public OrderService(OrderRepository orderRepository, ProductRepository productRepository,
-			StoreRepository storeRepository) {
+			StoreRepository storeRepository, OrderItemRepository orderItemRepository) {
 		this.orderRepository = orderRepository;
 		this.productRepository = productRepository;
 		this.storeRepository = storeRepository;
+		this.orderItemRepository = orderItemRepository;
 	}
 	
 	public Page<Order> findAllWithFilter(String keyword, String status, Long userId, String startDate, String endDate, int page, int size) {
@@ -141,7 +144,7 @@ public class OrderService {
 			String customerName = order.getUser().getName();
 
 			for (OrderItem item : order.getOrderItems()) {
-				OrderedProductDTO dto = new OrderedProductDTO(item.getProduct().getName(), item.getQuantity(),
+				OrderedProductDTO dto = new OrderedProductDTO(item.getId(), item.getProduct().getName(), item.getQuantity(),
 						customerName, item.getNote());
 				result.add(dto);
 			}
@@ -175,6 +178,31 @@ public class OrderService {
 
 	public Order getOrderById(Long id) {
 		return orderRepository.findById(id).orElse(null);
+	}
+
+	public void deleteOrderItem(Long orderItemId) {
+		OrderItem orderItem = orderItemRepository.findById(orderItemId)
+				.orElseThrow(() -> new RuntimeException("Order item not found"));
+		
+		Order order = orderItem.getOrder();
+		
+		// Xóa OrderItem khỏi database
+		orderItemRepository.delete(orderItem);
+		
+		// Kiểm tra xem Order còn OrderItem nào không
+		List<OrderItem> remainingItems = orderItemRepository.findByOrderId(order.getId());
+		
+		if (remainingItems.isEmpty()) {
+			// Nếu không còn OrderItem nào, xóa luôn Order
+			orderRepository.delete(order);
+		} else {
+			// Nếu còn OrderItem, cập nhật lại tổng tiền của Order
+			double newTotal = remainingItems.stream()
+					.mapToDouble(item -> item.getPrice() * item.getQuantity())
+					.sum();
+			order.setTotalPrice(newTotal);
+			orderRepository.save(order);
+		}
 	}
 
 }

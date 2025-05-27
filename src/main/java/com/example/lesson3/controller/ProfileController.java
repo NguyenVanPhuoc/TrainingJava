@@ -34,7 +34,6 @@ public class ProfileController {
 
     @PostMapping("/profile/update")
     public String updateProfile(
-            @RequestParam("name") String name,
             @RequestParam("email") String email,
             @RequestParam("phone") String phone,
             @RequestParam("address") String address,
@@ -71,7 +70,6 @@ public class ProfileController {
             }
 
             // Cập nhật thông tin cơ bản
-            currentUser.setName(name);
             currentUser.setEmail(email);
             currentUser.setPhone(phone);
             currentUser.setAddress(address);
