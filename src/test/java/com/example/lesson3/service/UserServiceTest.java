@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -106,6 +107,10 @@ public class UserServiceTest {
     @Test
     void testDeleteUser() {
         Long userId = 1L;
+        User mockUser = new User();
+        mockUser.setId(userId);
+        mockUser.setAvatar("users/avatar.png"); // hoặc null nếu không cần test delete file
+        when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
         userService.deleteUser(userId);
         verify(userRepository).deleteById(userId);
     }
