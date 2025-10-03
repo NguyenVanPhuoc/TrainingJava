@@ -68,8 +68,8 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain userSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-        	.authorizeRequests(auth -> auth
-                .antMatchers("/login", "/css/**", "/js/**", "/images/**").permitAll()
+            .authorizeRequests(auth -> auth
+                .antMatchers("/login", "/css/**", "/js/**", "/images/**", "/crawl/**").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

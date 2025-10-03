@@ -9,9 +9,9 @@
 			class="restaurant-card-link">
 			<div class="restaurant-card" data-store-id="${store.id}">
 				<div class="restaurant-image">
-					<img
-						src="${pageContext.request.contextPath}/uploads/${store.image}"
-						alt="${store.name}">
+                    <img
+                        src="${pageContext.request.contextPath}/uploads/${not empty store.image ? store.image : '../images/food.jpg'}"
+                        alt="${store.name}" class="store-image">
 					<div class="restaurant-overlay">
 						<span class="view-details">Xem chi tiết</span>
 					</div>

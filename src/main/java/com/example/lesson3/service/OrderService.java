@@ -142,10 +142,11 @@ public class OrderService {
 
 		for (Order order : orders) {
 			String customerName = order.getUser().getName();
+			Long userId = order.getUser().getId();
 
 			for (OrderItem item : order.getOrderItems()) {
 				OrderedProductDTO dto = new OrderedProductDTO(item.getId(), item.getProduct().getName(), item.getQuantity(),
-						customerName, item.getNote());
+						customerName, userId, item.getNote());
 				result.add(dto);
 			}
 		}

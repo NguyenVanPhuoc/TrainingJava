@@ -5,13 +5,15 @@ public class OrderedProductDTO {
     private String productName;
     private int quantity;
     private String customerName;
+    private Long userId;
     private String note; 
 
-    public OrderedProductDTO(Long id, String productName, int quantity, String customerName, String note) {
+    public OrderedProductDTO(Long id, String productName, int quantity, String customerName, Long userId, String note) {
         this.id = id;
         this.productName = productName;
         this.quantity = quantity;
         this.customerName = customerName;
+        this.userId = userId;
         this.note = note;
     }
 
@@ -42,6 +44,10 @@ public class OrderedProductDTO {
 	public String getCustomerName() {
 		return customerName;
 	}
+
+	public Long getUserId() {
+        return userId;
+    }
 
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;

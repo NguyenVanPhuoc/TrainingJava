@@ -1,6 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%@ include file="/WEB-INF/views/templates/header.jsp"%>
+<!-- Lấy user từ Spring Security -->
+<sec:authentication property="principal" var="userPrincipal"/>
+<c:set var="currentUserId" value="${userPrincipal.user.id}" />
+
 <h2 class="page-title">${store.name}</h2>
 <p>Địa chỉ: ${store.address}</p>
 <p id="distance"></p>
@@ -12,15 +16,17 @@
 			- ${store.orderEndTime}</p>
 
 		<c:forEach var="product" items="${products}">
-			<div
-				class="product-item ${product.status == 2 ? 'disabled-product' : ''}"
+			<div class="product-item ${product.status == 2 ? 'status-disabled' : ''}"
 				id="product-${product.id}" data-id="${product.id}"
 				data-name="${product.name}" data-price="${product.price}">
 				<img
-					src="${pageContext.request.contextPath}/uploads/${product.image}"
+					src="${pageContext.request.contextPath}/uploads/${not empty product.image ? product.image : '../images/food.jpg'}"
 					alt="${product.name}" class="product-image">
 				<div class="product-info">
-					<div class="product-name">${product.name}</div>
+					<div class="name-note">
+						<div class="product-name">${product.name}</div>
+						<p class="font-small">${product.description}</p>
+					</div>
 					<div class="product-price">${product.displayPrice}đ</div>
 				</div>
 				<button class="btn btn-add">+</button>
@@ -64,10 +70,18 @@
 							<td data-label="Ghi chú" class="note"><span class="note">${orderedProduct.note}</span></td>
 							<td data-label="Người Đặt" class="customer-name">${orderedProduct.customerName}</td>
 							<td data-label="Thao tác">
-								<button type="button" class="btn btn-danger btn-sm ms-1 btn-delete"
-									data-id="${orderedProduct.id}">
-									<i class="fas fa-trash"></i>
-								</button>
+								<!-- Chỉ hiển thị nút xóa nếu user_id trùng khớp -->
+								<c:if test="${orderedProduct.userId == currentUserId}">
+									<button type="button" class="btn btn-danger btn-sm ms-1 btn-delete"
+										data-id="${orderedProduct.id}">
+										<i class="fas fa-trash"></i>
+									</button>
+								</c:if>
+								<c:if test="${orderedProduct.userId != currentUserId}">
+									<button type="button" class="btn btn-warning btn-sm ms-1 btn-ban">
+										<i class="fa fa-ban" aria-hidden="true"></i>
+									</button>
+								</c:if>
 							</td>
 						</tr>
 						<c:set var="totalQuantity"
@@ -88,6 +102,7 @@
 <script>
 
   let cart = {};
+  const currentUserId = ${userPrincipal.user.id};
   
   function updateCart() {
     const $cartItems = $('#cart-items');
@@ -183,15 +198,20 @@
 			if (!isInOrderTime(orderStart, orderEnd)) {
 				console.log('Outside order time');
 				$('.btn-add, .btn-minus').prop('disabled', true);
-				if ($('.order-time').length === 0) {
-					$('.detail-cart .title').after('<div class="order-time">Hiện tại ngoài giờ đặt hàng</div>');
+				if ($('.order-time-alert').length === 0) {
+					$('.detail-cart .title').after('<div class="order-time-alert">Hiện tại ngoài giờ đặt hàng</div>');
 				}
-				$('.product-item').addClass('disabled-product');
-				$('.btn-delete').addClass('disabled-product');
+				// CHỈ thêm class cho sản phẩm KHÔNG bị disabled do status
+				$('.product-item:not(.status-disabled)').addClass('time-disabled');
+				// ẨN nút xóa và HIỆN nút ban cho tất cả các order
+				$('.btn-delete').each(function() {
+					const $deleteBtn = $(this);
+					const $banBtn = $('<button type="button" class="btn btn-warning btn-sm ms-1 btn-ban"><i class="fa fa-ban" aria-hidden="true"></i></button>');
+					$deleteBtn.replaceWith($banBtn);
+				});
 				if ($('#confirm-btn').length > 0) {
 					$('#confirm-btn').remove();
 				}
-				// Dừng interval khi ngoài giờ đặt hàng
 				if (orderTimeInterval) {
 					clearInterval(orderTimeInterval);
 					orderTimeInterval = null;
@@ -200,9 +220,10 @@
 			} else {
 				console.log('Inside order time');
 				$('.btn-add, .btn-minus').prop('disabled', false);
-				$('.order-time').remove();
-				$('.product-item').removeClass('disabled-product');
-				$('.btn-delete').removeClass('disabled-product');
+				$('.order-time-alert').remove();
+				// CHỈ remove class time-disabled, giữ nguyên status-disabled
+				$('.product-item').removeClass('time-disabled');
+				$('.btn-delete').removeClass('time-disabled');
 				if ($('#confirm-btn').length === 0 && Object.keys(cart).length > 0) {
 					$('.detail-cart .d-flex').append('<button id="confirm-btn" class="confirm-btn">Xác nhận</button>');
 				}
@@ -317,15 +338,18 @@
 	   	  let totalQuantity = 0;
 	   	    response.forEach(function (item) {
 	   	    	totalQuantity += item.quantity;
+				// Kiểm tra quyền xóa dựa trên user_id
+                const canDelete = item.userId === currentUserId;
+                const deleteButton = canDelete 
+                    ? '<button type="button" class="btn btn-danger btn-sm ms-1 btn-delete" data-id="' + item.id + '"><i class="fas fa-trash"></i></button>'
+                    : '<button type="button" class="btn btn-warning btn-sm ms-1 btn-ban"> <i class="fa fa-ban" aria-hidden="true"></i></button>';
 	   	    	var row = 
 	   	    	    '<tr>' +
 	   	    	        '<td data-label="Sản Phẩm" class="product-name">' + item.productName + '</td>' +
 	   	    	        '<td data-label="Số Lượng" class="quantity"><span class="quantity-badge">' + item.quantity + '</span></td>' +
 	   	    	     	'<td data-label="Ghi chú" class="note"><span class="note">' + (item.note || '') + '</span></td>' +
 	   	    	        '<td data-label="Người Đặt" class="customer-name">' + item.customerName + '</td>' +
-	   	    	        '<td data-label="Thao tác">' +
-	   	    	            '<button type="button" class="btn btn-danger btn-sm ms-1 btn-delete" data-id="' + item.id + '"><i class="fas fa-trash"></i></button>' +
-	   	    	        '</td>' +
+	   	    	        '<td data-label="Thao tác">' + deleteButton + '</td>' +
 	   	    	    '</tr>';
 	   	    	$('#ordered-products-table').append(row);
 	   	    });

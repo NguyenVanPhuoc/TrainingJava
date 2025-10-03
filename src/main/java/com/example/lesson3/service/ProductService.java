@@ -19,7 +19,7 @@ public class ProductService {
 	private ProductRepository productRepository;
 
 	public Page<Product> findAllWithFilter(Long storeId, String keyword, Integer status, int page, int size) {
-		Sort sort = Sort.by("id").descending();
+		Sort sort = Sort.by("id").ascending();
 		Pageable pageable = PageRequest.of(page - 1, size, sort);
 
 		if (keyword != null && !keyword.isEmpty() && status != null) {

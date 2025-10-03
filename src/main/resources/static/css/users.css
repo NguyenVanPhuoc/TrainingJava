@@ -271,6 +271,11 @@ input.input-key, .select-status {
     margin-right: 5px;
 }
 
+.user-table td:last-child button {
+    width: 42px;
+    height: 38px;
+}
+
 @media (max-width: 992px) {
   .search-row {
     flex-wrap: wrap;
