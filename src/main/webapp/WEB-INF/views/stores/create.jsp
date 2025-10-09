@@ -23,6 +23,16 @@
                                 </div>
                                 <form:errors path="name" cssClass="text-red-500 error-validate" />
                             </div>
+
+                            <!-- slug -->
+                            <div class="form-group">
+                                <label for="slug" class="form-label required-field">Slug</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-link"></i></span>
+                                    <form:input path="slug" cssClass="form-control" id="slug" placeholder="Nhập slug"/>
+                                </div>
+                                <form:errors path="slug" cssClass="text-red-500 error-validate" />
+                            </div>
                             
                             <!-- Address -->
                             <div class="form-group">

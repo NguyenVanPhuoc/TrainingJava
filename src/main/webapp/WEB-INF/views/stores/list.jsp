@@ -1,5 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
+<!-- Thêm JS -->
+<c:import url="/WEB-INF/views/layouts/assets-helper.jsp">
+    <c:param name="js" value="/js/list-actions.js" />
+</c:import>
+
 <c:if test="${not empty successMessage}">
     <div class="alert alert-success alert-dismissible fade show success-message" role="alert">
         ${successMessage}
@@ -113,83 +118,3 @@
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-$(document).ready(function($) {
-    let currentStoreId = null;
-    
-    // Xử lý khi click vào nút crawl data
-    $('.craw-data').click(function(e) {
-        e.preventDefault();
-        currentStoreId = $(this).data('store-id');
-        $('#storeIdInput').val(currentStoreId);
-        $('#urlInput').val('');
-        $('#crawlResult').hide().empty();
-        $('#crawlModal').modal('show');
-    });
-    
-    // Xử lý khi click nút bắt đầu crawl
-    $('#startCrawlBtn').click(function() {
-        const url = $('#urlInput').val().trim();
-        
-        if (!url) {
-            alert('Vui lòng nhập URL GrabFood');
-            return;
-        }
-        
-        // Hiển thị loading
-        $('#startCrawlBtn').prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang xử lý...');
-        
-        // Gọi API crawl
-        $.ajax({
-            url: '${pageContext.request.contextPath}/crawl/store',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                storeId: currentStoreId,
-                url: url
-            }),
-            success: function(response) {
-                const message = response.message || 'Crawl dữ liệu thành công';
-                const count = response.productsCount || 0;
-                $('#crawlResult').show().html(
-                    '<div class="alert alert-success">' +
-                    '<h6>' + message + '</h6>' +
-                    '<p>Đã thêm ' + count + ' sản phẩm vào cửa hàng.</p>' +
-                    '</div>'
-                );
-                
-                $('#startCrawlBtn').prop('disabled', false).html('Bắt đầu Crawl');
-                
-                // Tự động đóng modal sau 5 giây
-                setTimeout(function() {
-                    $('#crawlModal').modal('hide');
-                }, 5000);
-            },
-            error: function(xhr) {
-                let errorMessage = 'Có lỗi xảy ra khi crawl dữ liệu';
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    errorMessage = xhr.responseJSON.message;
-                } else if (xhr.status === 502) {
-                    errorMessage = 'Không thể kết nối đến trang GrabFood. Vui lòng kiểm tra lại URL.';
-                }
-                
-                $('#crawlResult').show().html(`
-                    <div class="alert alert-danger">
-                        <h6>Crawl thất bại!</h6>
-                        <p>${errorMessage}</p>
-                    </div>
-                `);
-                $('#startCrawlBtn').prop('disabled', false).html('Bắt đầu Crawl');
-            }
-        });
-    });
-    
-    // Reset form khi modal đóng
-    $('#crawlModal').on('hidden.bs.modal', function() {
-        $('#crawlForm')[0].reset();
-        $('#crawlResult').hide().empty();
-        $('#startCrawlBtn').prop('disabled', false).html('Bắt đầu Crawl');
-    });
-});
-</script>

@@ -65,6 +65,7 @@ body {
     vertical-align: middle;
     border-top: 1px solid #e3e6f0;
     color: #5a5c69;
+    max-width: 350px;
 }
 
 .user-table tr:hover {

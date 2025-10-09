@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
 @Controller
 public class ProfileController {
 
@@ -29,7 +28,9 @@ public class ProfileController {
         String email = auth.getName();
         User user = userService.findByEmail(email);
         model.addAttribute("user", user);
-        return "profile/index";
+        model.addAttribute("contentPage", "/WEB-INF/views/profile/index.jsp");
+        model.addAttribute("pageTitle", "Thông tin cá nhân");
+        return "templates/main";
     }
 
     @PostMapping("/profile/update")
@@ -41,7 +42,7 @@ public class ProfileController {
             @RequestParam(value = "confirmPassword", required = false) String confirmPassword,
             @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
             RedirectAttributes redirectAttributes) {
-        
+
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String currentEmail = auth.getName();
@@ -73,7 +74,7 @@ public class ProfileController {
             currentUser.setEmail(email);
             currentUser.setPhone(phone);
             currentUser.setAddress(address);
-            
+
             // Set mật khẩu mới nếu có
             if (password != null && !password.isEmpty()) {
                 String hashedPassword = PasswordUtil.hashPassword(password);
@@ -96,14 +97,15 @@ public class ProfileController {
             }
             // Lưu thông tin user
             userService.saveUser(currentUser);
-            
+
             // Nếu email hoặc mật khẩu thay đổi, yêu cầu đăng nhập lại
             if (!email.equals(currentEmail) || (password != null && !password.isEmpty())) {
                 SecurityContextHolder.clearContext();
-                redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin thành công! Vui lòng đăng nhập lại.");
+                redirectAttributes.addFlashAttribute("successMessage",
+                        "Cập nhật thông tin thành công! Vui lòng đăng nhập lại.");
                 return "redirect:/login";
             }
-            
+
             redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin thành công!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật thông tin!");

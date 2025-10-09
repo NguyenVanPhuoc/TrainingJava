@@ -13,29 +13,33 @@ import java.util.List;
 @Table(name = "stores")
 public class Store {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @NotBlank(message = "Tên cửa hàng là bắt buộc")
-    private String name;
-    
-    @NotBlank(message = "Địa chỉ cửa hàng là bắt buộc")
-    private String address;
-    
-    @Column(nullable = true)
-    private String phone;
+	@NotBlank(message = "Tên cửa hàng là bắt buộc")
+	private String name;
 
-    // 1 = hoạt động, 0 = ngừng hoạt động
-    private int status = 1;
+	@NotBlank(message = "Slug là bắt buộc")
+	@Column(unique = true)
+	private String slug;
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
-    private List<Product> products;
-    
-    @Transient
-    private MultipartFile imageFile;
+	@NotBlank(message = "Địa chỉ cửa hàng là bắt buộc")
+	private String address;
 
-    public MultipartFile getImageFile() {
+	@Column(nullable = true)
+	private String phone;
+
+	// 1 = hoạt động, 0 = ngừng hoạt động
+	private int status = 1;
+
+	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+	private List<Product> products;
+
+	@Transient
+	private MultipartFile imageFile;
+
+	public MultipartFile getImageFile() {
 		return imageFile;
 	}
 
@@ -44,9 +48,9 @@ public class Store {
 	}
 
 	private String image;
-	
+
 	private Double rating;
-	
+
 	@DateTimeFormat(pattern = "HH:mm")
 	@Column(name = "order_start_time")
 	private LocalTime orderStartTime;
@@ -55,53 +59,61 @@ public class Store {
 	@Column(name = "order_end_time")
 	private LocalTime orderEndTime;
 
-    // Getters và Setters
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-    
-    public String getStatusName() {
-	    switch (this.status) {
-	        case 1:
-	            return "Hoạt động";
-	        case 2:
-	            return "Ngừng hoạt động";
-	        default:
-	            return "UNKNOWN";
-	    }
+	// Getters và Setters
+	public Long getId() {
+		return id;
 	}
 
-    public void setStatus(int status) {
-        this.status = status;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public List<Product> getProducts() {
-        return products;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
-    }
+	public String getSlug() {
+		return slug;
+	}
+
+	public void setSlug(String slug) {
+		this.slug = slug;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public String getStatusName() {
+		switch (this.status) {
+			case 1:
+				return "Hoạt động";
+			case 2:
+				return "Ngừng hoạt động";
+			default:
+				return "UNKNOWN";
+		}
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public List<Product> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<Product> products) {
+		this.products = products;
+	}
 
 	public String getPhone() {
 		return phone;
@@ -114,7 +126,7 @@ public class Store {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	public String getImage() {
 		return image;
 	}
@@ -122,21 +134,21 @@ public class Store {
 	public void setImage(String image) {
 		this.image = image;
 	}
-	
+
 	public LocalTime getOrderStartTime() {
-	    return orderStartTime;
+		return orderStartTime;
 	}
 
 	public void setOrderStartTime(LocalTime orderStartTime) {
-	    this.orderStartTime = orderStartTime;
+		this.orderStartTime = orderStartTime;
 	}
 
 	public LocalTime getOrderEndTime() {
-	    return orderEndTime;
+		return orderEndTime;
 	}
 
 	public void setOrderEndTime(LocalTime orderEndTime) {
-	    this.orderEndTime = orderEndTime;
+		this.orderEndTime = orderEndTime;
 	}
 
 	public Double getRating() {
@@ -146,5 +158,5 @@ public class Store {
 	public void setRating(Double rating) {
 		this.rating = rating;
 	}
-    
+
 }

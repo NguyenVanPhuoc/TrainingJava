@@ -46,7 +46,22 @@ public class StoreService {
         return storeRepository.findById(id);
     }
 
+    public Optional<Store> findBySlug(String slug) {
+        return storeRepository.findBySlug(slug);
+    }
+
     public Store saveStore(Store store) {
+        if (store.getId() != null) {
+            // Trường hợp đang edit
+            if (storeRepository.existsBySlugAndIdNot(store.getSlug(), store.getId())) {
+                throw new IllegalArgumentException("Slug đã tồn tại, vui lòng chọn slug khác");
+            }
+        } else {
+            // Trường hợp thêm mới
+            if (storeRepository.existsBySlug(store.getSlug())) {
+                throw new IllegalArgumentException("Slug đã tồn tại, vui lòng chọn slug khác");
+            }
+        }
         return storeRepository.save(store);
     }
 

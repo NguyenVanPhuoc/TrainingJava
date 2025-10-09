@@ -54,23 +54,42 @@ public class HomeController {
 	public String home(Model model) {
 		List<Store> stores = storeService.getAllStores();
 		model.addAttribute("stores", stores);
-		return "home";
+		model.addAttribute("contentPage", "/WEB-INF/views/home.jsp");
+		model.addAttribute("pageTitle", "Trang chủ");
+		return "templates/main";
 	}
 
-	@GetMapping("/store/detail/{storeId}")
-	public String storeDetail(@PathVariable("storeId") Long storeId, Model model) {
-		Store store = storeService.findById(storeId).orElse(null);
-		model.addAttribute("store", store);
+	@GetMapping("/store/detail/{slug}")
+	public String storeDetail(@PathVariable("slug") String slug, Model model) {
+		Store store = storeService.findBySlug(slug).orElse(null);
+		if (store == null) {
+			return "error/404";
+		}
 
-		List<Product> products = productService.findByStoreId(storeId);
+		List<Product> products = productService.findByStoreId(store.getId());
 
-		List<OrderedProductDTO> orderedProducts = orderService.findOrderedProductsToday(storeId);
+		List<OrderedProductDTO> orderedProducts = orderService.findOrderedProductsToday(store.getId());
 
 		model.addAttribute("store", store);
 		model.addAttribute("products", products);
 		model.addAttribute("orderedProducts", orderedProducts);
 
-		return "store_detail";
+		model.addAttribute("contentPage", "/WEB-INF/views/store_detail.jsp");
+		model.addAttribute("pageTitle", "Trang chi tiết cửa hàng");
+		return "templates/main";
+	}
+
+	// API để frontend polling lấy danh sách ordered products
+	@GetMapping("/orderItem/getByStore/{storeId}")
+	@ResponseBody
+	public ResponseEntity<?> getOrderedProductsByStore(@PathVariable Long storeId) {
+		try {
+			List<OrderedProductDTO> orderedProducts = orderService.findOrderedProductsToday(storeId);
+			return ResponseEntity.ok(orderedProducts);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi lấy danh sách đơn hàng");
+		}
 	}
 
 	@PostMapping("/order/create")
@@ -87,7 +106,7 @@ public class HomeController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi đặt hàng");
 		}
 	}
-	
+
 	@PostMapping("/orderItem/delete/{id}")
 	@ResponseBody
 	public ResponseEntity<?> deleteOrderItem(@PathVariable Long id) {
@@ -99,22 +118,23 @@ public class HomeController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi xóa sản phẩm");
 		}
 	}
-	
+
 	@GetMapping("/user/orders/unpaid")
 	public String getUnpaidOrders(Model model, Principal principal) {
-	    User user = userService.findByEmail(principal.getName());
+		User user = userService.findByEmail(principal.getName());
 
-	    List<Order> unpaidOrders = orderService.findUnpaidOrdersByUser(user.getId());
+		List<Order> unpaidOrders = orderService.findUnpaidOrdersByUser(user.getId());
 
-	    double totalPrice = unpaidOrders.stream()
-	        .flatMap(order -> order.getItems().stream())
-	        .mapToDouble(item -> item.getQuantity() * item.getPrice())
-	        .sum();
-	    
-	    model.addAttribute("orders", unpaidOrders);
-	    model.addAttribute("totalPrice", totalPrice);
+		double totalPrice = unpaidOrders.stream()
+				.flatMap(order -> order.getItems().stream())
+				.mapToDouble(item -> item.getQuantity() * item.getPrice())
+				.sum();
 
-	    return "unpaid_orders";
+		model.addAttribute("orders", unpaidOrders);
+		model.addAttribute("totalPrice", totalPrice);
+		model.addAttribute("contentPage", "/WEB-INF/views/unpaid_orders.jsp");
+		model.addAttribute("pageTitle", "Trang hóa đơn chưa thanh toán");
+		return "templates/main";
 	}
 
 	@GetMapping("/login")

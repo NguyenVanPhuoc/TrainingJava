@@ -11,7 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.persistence.criteria.Predicate;
 
 import com.example.lesson3.model.Order;
 import com.example.lesson3.model.OrderItem;
@@ -41,44 +41,43 @@ public class OrderService {
 		this.orderItemRepository = orderItemRepository;
 	}
 	
-	public Page<Order> findAllWithFilter(String keyword, String status, Long userId, String startDate, String endDate, int page, int size) {
-    	Sort sort = Sort.by("id").descending();
-    	Pageable pageable = PageRequest.of(page - 1, size, sort);
+	public Page<Order> findAllWithFilter(String keyword, String status, Long userId, 
+                                   String startDate, String endDate, int page, int size) {
+		Sort sort = Sort.by("id").descending();
+		Pageable pageable = PageRequest.of(page - 1, size, sort);
 
-    	LocalDateTime startDateTime = null;
-    	LocalDateTime endDateTime = null;
-    	
-    	if (startDate != null && !startDate.isEmpty()) {
-    		startDateTime = LocalDate.parse(startDate).atStartOfDay();
-    	}
-    	if (endDate != null && !endDate.isEmpty()) {
-    		endDateTime = LocalDate.parse(endDate).atTime(LocalTime.MAX);
-    	}
-
-    	if (keyword != null && !keyword.isEmpty() && status != null && !status.isEmpty() && userId != null) {
-    	    return orderRepository.searchByStoreNameAndStatusAndUserId(keyword, status, userId, pageable);
-    	} else if (keyword != null && !keyword.isEmpty() && status != null && !status.isEmpty()) {
-    	    return orderRepository.searchByStoreNameAndStatus(keyword, status, pageable);
-    	} else if (keyword != null && !keyword.isEmpty() && userId != null) {
-    	    return orderRepository.searchByStoreNameAndUserId(keyword, userId, pageable);
-    	} else if (status != null && !status.isEmpty() && userId != null) {
-    	    return orderRepository.findByStatusAndUserId(status, userId, pageable);
-    	} else if (keyword != null && !keyword.isEmpty()) {
-    	    return orderRepository.searchByStoreName(keyword, pageable);
-    	} else if (status != null && !status.isEmpty()) {
-            return orderRepository.findByStatus(status, pageable);
-    	} else if (userId != null) {
-            return orderRepository.findByUserId(userId, pageable);
-    	} else if (startDateTime != null && endDateTime != null) {
-            return orderRepository.findByCreatedAtBetween(startDateTime, endDateTime, pageable);
-    	} else if (startDateTime != null) {
-            return orderRepository.findByCreatedAtGreaterThanEqual(startDateTime, pageable);
-    	} else if (endDateTime != null) {
-            return orderRepository.findByCreatedAtLessThanEqual(endDateTime, pageable);
-    	} else {
-            return orderRepository.findAll(pageable);
-        }
-    }
+		return orderRepository.findAll((root, query, cb) -> {
+			List<Predicate> predicates = new ArrayList<>();
+			
+			// Điều kiện keyword - tìm theo store name
+			if (keyword != null && !keyword.isEmpty()) {
+				predicates.add(cb.like(cb.lower(root.get("store").get("name")), 
+									"%" + keyword.toLowerCase() + "%"));
+			}
+			
+			// Điều kiện status
+			if (status != null && !status.isEmpty()) {
+				predicates.add(cb.equal(root.get("status"), status));
+			}
+			
+			// Điều kiện userId
+			if (userId != null) {
+				predicates.add(cb.equal(root.get("user").get("id"), userId));
+			}
+			
+			// Điều kiện thời gian
+			if (startDate != null && !startDate.isEmpty()) {
+				LocalDateTime startDateTime = LocalDate.parse(startDate).atStartOfDay();
+				predicates.add(cb.greaterThanOrEqualTo(root.get("createdAt"), startDateTime));
+			}
+			if (endDate != null && !endDate.isEmpty()) {
+				LocalDateTime endDateTime = LocalDate.parse(endDate).atTime(LocalTime.MAX);
+				predicates.add(cb.lessThanOrEqualTo(root.get("createdAt"), endDateTime));
+			}
+			
+			return cb.and(predicates.toArray(new Predicate[0]));
+		}, pageable);
+	}
 
 	public void createOrder(User user, OrderRequest request) {
 		System.out.println("request: " + request);

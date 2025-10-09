@@ -212,7 +212,10 @@
 	</div>
 </div>
 
-<script src="${pageContext.request.contextPath}/js/list-actions.js"></script>
+<!-- Thêm JS -->
+<c:import url="/WEB-INF/views/layouts/assets-helper.jsp">
+    <c:param name="js" value="/js/list-actions.js" />
+</c:import>
 <script>
 // Hàm định dạng số tiền
 function formatCurrency(amount) {

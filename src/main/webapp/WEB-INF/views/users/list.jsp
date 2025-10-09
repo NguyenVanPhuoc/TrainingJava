@@ -87,5 +87,7 @@
 <c:set var="deleteUrl" value="/admin/users/delete/" />
 <c:set var="deleteMultipleUrl" value="/admin/users/delete-multiple" />
 <%@ include file="/WEB-INF/views/common/delete-modals.jsp" %>
-
-<script src="${pageContext.request.contextPath}/js/list-actions.js"></script>
+<!-- Thêm JS -->
+<c:import url="/WEB-INF/views/layouts/assets-helper.jsp">
+    <c:param name="js" value="/js/list-actions.js" />
+</c:import>
