@@ -1,0 +1,54 @@
+services:
+  app:
+    build:
+      context: .
+    container_name: bau_food_app
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mysql
+    volumes:
+      - .:/app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/bau_food
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+    command: ["./gradlew", "bootRun", "--no-daemon", "--continuous"]
+    networks:
+      - bau_food_network
+
+  mysql:
+    image: mysql:8.0
+    container_name: bau_food_mysql
+    environment:
+      MYSQL_DATABASE: bau_food
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3308:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - bau_food_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: bau_food_phpmyadmin
+    ports:
+      - "8765:80"
+    environment:
+      PMA_HOST: bau_food_mysql
+      PMA_USER: root
+      PMA_PASSWORD: root
+    depends_on:
+      - mysql
+    networks:
+      - bau_food_network
+
+volumes:
+  dbdata:
+
+networks:
+  bau_food_network:
+    driver: bridge
