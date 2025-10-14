@@ -24,7 +24,7 @@ class OrderRepositoryTest {
     void testStatusAndUserQueries() {
         User user = new User(); user.setEmail("o@example.com"); user.setUsername("o"); user.setPassword("p"); user.setRole(1);
         user = userRepository.save(user);
-        Store store = new Store(); store.setName("Gamma Cafe"); store.setAddress("9 Gamma Rd"); store.setStatus(1); store = storeRepository.save(store);
+        Store store = new Store(); store.setName("Gamma Cafe");  store.setSlug("x1"); store.setAddress("9 Gamma Rd"); store.setStatus(1); store = storeRepository.save(store);
 
         Order o1 = new Order(); o1.setUser(user); o1.setStore(store); o1.setStatus("paid"); o1.setCreatedAt(LocalDateTime.now());
         Order o2 = new Order(); o2.setUser(user); o2.setStore(store); o2.setStatus("unpaid"); o2.setCreatedAt(LocalDateTime.now());

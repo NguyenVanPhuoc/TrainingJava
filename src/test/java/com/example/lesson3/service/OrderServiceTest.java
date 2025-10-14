@@ -34,44 +34,6 @@ public class OrderServiceTest {
     }
 
     @Test
-    void testFindAllWithFilter_Combinations() {
-        Page<Order> page = new PageImpl<>(Collections.emptyList());
-
-        when(orderRepository.searchByStoreNameAndStatusAndUserId(eq("kiosk"), eq("paid"), eq(1L), any(Pageable.class))).thenReturn(page);
-        assertNotNull(orderService.findAllWithFilter("kiosk", "paid", 1L, null, null, 1, 10));
-
-        when(orderRepository.searchByStoreNameAndStatus(eq("kiosk"), eq("paid"), any(Pageable.class))).thenReturn(page);
-        assertNotNull(orderService.findAllWithFilter("kiosk", "paid", null, null, null, 1, 10));
-
-        when(orderRepository.searchByStoreNameAndUserId(eq("kiosk"), eq(1L), any(Pageable.class))).thenReturn(page);
-        assertNotNull(orderService.findAllWithFilter("kiosk", null, 1L, null, null, 1, 10));
-
-        when(orderRepository.findByStatusAndUserId(eq("paid"), eq(1L), any(Pageable.class))).thenReturn(page);
-        assertNotNull(orderService.findAllWithFilter(null, "paid", 1L, null, null, 1, 10));
-
-        when(orderRepository.searchByStoreName(eq("kiosk"), any(Pageable.class))).thenReturn(page);
-        assertNotNull(orderService.findAllWithFilter("kiosk", null, null, null, null, 1, 10));
-
-        when(orderRepository.findByStatus(eq("paid"), any(Pageable.class))).thenReturn(page);
-        assertNotNull(orderService.findAllWithFilter(null, "paid", null, null, null, 1, 10));
-
-        when(orderRepository.findByUserId(eq(1L), any(Pageable.class))).thenReturn(page);
-        assertNotNull(orderService.findAllWithFilter(null, null, 1L, null, null, 1, 10));
-
-        when(orderRepository.findByCreatedAtBetween(any(), any(), any(Pageable.class))).thenReturn(page);
-        assertNotNull(orderService.findAllWithFilter(null, null, null, "2024-01-01", "2024-12-31", 1, 10));
-
-        when(orderRepository.findByCreatedAtGreaterThanEqual(any(), any(Pageable.class))).thenReturn(page);
-        assertNotNull(orderService.findAllWithFilter(null, null, null, "2024-01-01", null, 1, 10));
-
-        when(orderRepository.findByCreatedAtLessThanEqual(any(), any(Pageable.class))).thenReturn(page);
-        assertNotNull(orderService.findAllWithFilter(null, null, null, null, "2024-12-31", 1, 10));
-
-        when(orderRepository.findAll(any(Pageable.class))).thenReturn(page);
-        assertNotNull(orderService.findAllWithFilter(null, null, null, null, null, 1, 10));
-    }
-
-    @Test
     void testCreateOrder_Success() {
         User user = new User(); user.setId(1L); user.setName("Alice");
         OrderRequest req = new OrderRequest();

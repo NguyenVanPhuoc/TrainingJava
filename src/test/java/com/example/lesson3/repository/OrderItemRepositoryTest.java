@@ -27,7 +27,7 @@ class OrderItemRepositoryTest {
     void testFindByOrderId() {
         User user = new User(); user.setEmail("x@example.com"); user.setUsername("x"); user.setPassword("p"); user.setRole(1);
         user = userRepository.save(user);
-        Store store = new Store(); store.setName("Zeta Cafe"); store.setAddress("7 Zeta Ln"); store.setStatus(1); store = storeRepository.save(store);
+        Store store = new Store(); store.setName("Zeta Cafe"); store.setSlug("xxx"); store.setAddress("7 Zeta Ln"); store.setStatus(1); store = storeRepository.save(store);
 
         // create a valid product for FK and validation
         Product product = new Product(); product.setName("Latte"); product.setPrice(25.0); product.setStatus(1); product.setStore(store);

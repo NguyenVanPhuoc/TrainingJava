@@ -17,8 +17,8 @@ class StoreRepositoryTest {
 
     @Test
     void testQueries() {
-        Store s1 = new Store(); s1.setName("Alpha Coffee"); s1.setAddress("1 A St"); s1.setStatus(1);
-        Store s2 = new Store(); s2.setName("Beta Tea"); s2.setAddress("2 B St"); s2.setStatus(0);
+        Store s1 = new Store(); s1.setName("Alpha Coffee"); s1.setSlug("x3"); s1.setAddress("1 A St"); s1.setStatus(1);
+        Store s2 = new Store(); s2.setName("Beta Tea"); s2.setSlug("x4"); s2.setAddress("2 B St"); s2.setStatus(0);
         storeRepository.save(s1); storeRepository.save(s2);
 
         assertFalse(storeRepository.findByStatus(1).isEmpty());

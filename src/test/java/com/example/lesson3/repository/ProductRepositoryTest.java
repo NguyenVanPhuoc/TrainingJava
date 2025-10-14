@@ -25,6 +25,7 @@ class ProductRepositoryTest {
         store.setName("Coffee House");
         store.setAddress("123 Test St");
         store.setStatus(1);
+        store.setSlug("x2");
         store = storeRepository.save(store);
 
         Product a = new Product(); a.setName("Black Tea"); a.setStatus(1); a.setStore(store); a.setPrice(10.0);
