@@ -18,7 +18,7 @@
       <ul class="list-unstyled mb-0">
         <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Thực đơn</a></li>
         <li class="mb-2"><a href="/user/orders/unpaid" class="text-secondary text-decoration-none">Hóa đơn</a></li>
-        <li class="mb-2"><a href="https://www.chatwork.com/#!rid261092654" class="text-secondary text-decoration-none" target="_blank">Liên hệ</a></li>
+        <li class="mb-2"><a href="/contact" class="text-secondary text-decoration-none">Liên hệ</a></li>
         <li class="mb-2"><a href="/user/orders/unpaid" class="text-secondary text-decoration-none">Hồ sơ</a></li>
       </ul>
     </div>

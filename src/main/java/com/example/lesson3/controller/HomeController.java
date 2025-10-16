@@ -2,9 +2,6 @@ package com.example.lesson3.controller;
 
 import java.security.Principal;
 import java.util.List;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 
 import javax.servlet.http.HttpSession;
 
@@ -56,6 +53,13 @@ public class HomeController {
 		model.addAttribute("stores", stores);
 		model.addAttribute("contentPage", "/WEB-INF/views/home.jsp");
 		model.addAttribute("pageTitle", "Trang chủ");
+		return "templates/main";
+	}
+
+	@GetMapping("/contact")
+	public String contact(Model model) {
+		model.addAttribute("contentPage", "/WEB-INF/views/contact.jsp");
+		model.addAttribute("pageTitle", "Liên hệ");
 		return "templates/main";
 	}
 

@@ -690,3 +690,146 @@ td.order-subtotal-label {
 	max-width: 1111px;
 	margin: 0 auto;
 }
+
+
+.contact-section {
+	max-width: 1024px;
+	margin: 0 auto;
+	background: white;
+	border-radius: 15px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+	overflow: hidden;
+}
+
+.contact-container {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.page-title-contact {
+	text-align: center;
+	padding: 10px;
+	background: linear-gradient(135deg, #1c742f 0%, #28a745 100%);
+	color: white;
+	font-size: 28px;
+	margin-bottom: 15px;
+}
+
+.contact-info, .contact-social {
+	flex: 1;
+	padding: 15px;
+    max-width: 50%;
+}
+
+.contact-details h3 {
+    text-align: left;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.contact-item {
+	display: flex;
+	align-items: center;
+	margin-bottom: 15px;
+	padding: 15px;
+	border-radius: 10px;
+	transition: all 0.3s ease;
+	background: #e8edec;
+	cursor: pointer;
+}
+
+.contact-item:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.contact-item:first-child .contact-icon {
+	width: 60px;
+	height: 50px;
+}
+
+.contact-social .contact-item {
+    justify-content: center;
+}
+
+.contact-icon {
+	width: 50px;
+	height: 50px;
+	background: linear-gradient(135deg, #176327 0%, #28a745 100%);
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: white;
+	font-size: 1.2rem;
+	margin-right: 15px;
+}
+
+.contact-details h3 {
+	margin-bottom: 5px;
+	color: #2c3e50;
+}
+
+.contact-details p {
+	color: #555;
+	text-align: left;
+}
+
+.social-web {
+	display: flex;
+	gap: 15px;
+	margin-top: 10px;
+}
+
+.social-link {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	color: white;
+	text-decoration: none;
+	transition: all 0.3s ease;
+}
+
+.social-link:hover {
+	transform: scale(1.1);
+}
+
+.facebook {
+	background: #3b5998;
+}
+
+.zalo {
+	background: #0068ff;
+}
+
+.bank-info {
+	margin-top: 10px;
+}
+
+.qr-code {
+	background: #f0f0f0;
+	border-radius: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px dashed #ccc;
+	color: #777;
+	font-size: 0.8rem;
+	text-align: center;
+	padding: 5px;
+}
+
+.qr-code img {
+    height: 288px;
+}
+
+.bank-details {
+	margin-top: 10px;
+}
+
+.bank-details p, .contact-social .contact-details h3 {
+	text-align: center;
+}

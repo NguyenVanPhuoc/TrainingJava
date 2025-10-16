@@ -18,8 +18,7 @@
 				<ul class="nav-menu d-flex list-unstyled m-0">
 					<li class="nav-item"><a href="/" class="nav-link px-3">Thực Đơn</a></li>
 					<li class="nav-item"><a href="/user/orders/unpaid" class="nav-link px-3">Hóa Đơn</a></li>
-					<li class="nav-item"><a href="https://www.chatwork.com/#!rid261092654" class="nav-link px-3"
-							target="_blank">Liên Hệ</a></li>
+					<li class="nav-item"><a href="/contact" class="nav-link px-3">Liên Hệ</a></li>
 					<li class="nav-item"><a href="/profile" class="nav-link px-3">Hồ sơ</a></li>
 				</ul>
 			</nav>
